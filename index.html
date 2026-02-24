@@ -225,6 +225,9 @@
       const statusEl = document.getElementById("status");
       const notesContainer = document.getElementById("notesContainer");
       const apiStatus = document.getElementById("apiStatus");
+      const STORAGE_KEY = "azure-notes-app:notes:v1";
+
+      let backendAvailable = true;
 
       function setStatus(msg) {
         statusEl.textContent = msg || "";
@@ -243,6 +246,20 @@
         const res = await fetch("/notes");
         if (!res.ok) throw new Error(`GET /notes failed (${res.status})`);
         return await res.json();
+      }
+
+      function getLocalNotes() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          const parsed = raw ? JSON.parse(raw) : [];
+          return Array.isArray(parsed) ? parsed.map((x) => String(x)) : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function setLocalNotes(notes) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
       }
 
       function renderNotes(notes) {
@@ -274,11 +291,14 @@
           const notes = await fetchNotes();
           renderNotes(notes);
           setStatus("");
-          apiStatus.textContent = "API: connected";
+          backendAvailable = true;
+          apiStatus.textContent = "Mode: online (API)";
         } catch (e) {
-          apiStatus.textContent = "API: not reachable";
-          setStatus(e?.message || "Failed to load notes");
-          notesContainer.innerHTML = `<div class="empty">Start the server, then refresh.</div>`;
+          backendAvailable = false;
+          const notes = getLocalNotes();
+          renderNotes(notes);
+          apiStatus.textContent = "Mode: offline (browser)";
+          setStatus("Offline mode: notes are saved in this browser.");
         } finally {
           addBtn.disabled = false;
           refreshBtn.disabled = false;
@@ -295,18 +315,32 @@
         setStatus("Adding…");
         addBtn.disabled = true;
         try {
-          const res = await fetch("/notes", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ note }),
-          });
-          if (!res.ok) throw new Error(`POST /notes failed (${res.status})`);
+          if (backendAvailable) {
+            const res = await fetch("/notes", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ note }),
+            });
+            if (!res.ok) throw new Error(`POST /notes failed (${res.status})`);
+          } else {
+            const notes = getLocalNotes();
+            notes.push(note);
+            setLocalNotes(notes);
+          }
+
           noteInput.value = "";
           await refresh();
           setStatus("Added.");
           setTimeout(() => setStatus(""), 900);
         } catch (e) {
-          setStatus(e?.message || "Failed to add note");
+          backendAvailable = false;
+          const notes = getLocalNotes();
+          notes.push(note);
+          setLocalNotes(notes);
+          noteInput.value = "";
+          await refresh();
+          setStatus("Added (offline).");
+          setTimeout(() => setStatus(""), 900);
         } finally {
           addBtn.disabled = false;
         }
@@ -315,13 +349,32 @@
       async function deleteNote(id) {
         setStatus("Deleting…");
         try {
-          const res = await fetch(`/notes/${id}`, { method: "DELETE" });
-          if (!res.ok) throw new Error(`DELETE /notes/${id} failed (${res.status})`);
+          if (backendAvailable) {
+            const res = await fetch(`/notes/${id}`, { method: "DELETE" });
+            if (!res.ok) throw new Error(`DELETE /notes/${id} failed (${res.status})`);
+          } else {
+            const notes = getLocalNotes();
+            const idx = Number.parseInt(id, 10);
+            if (Number.isFinite(idx) && idx >= 0 && idx < notes.length) {
+              notes.splice(idx, 1);
+              setLocalNotes(notes);
+            }
+          }
+
           await refresh();
           setStatus("Deleted.");
           setTimeout(() => setStatus(""), 900);
         } catch (e) {
-          setStatus(e?.message || "Failed to delete note");
+          backendAvailable = false;
+          const notes = getLocalNotes();
+          const idx = Number.parseInt(id, 10);
+          if (Number.isFinite(idx) && idx >= 0 && idx < notes.length) {
+            notes.splice(idx, 1);
+            setLocalNotes(notes);
+          }
+          await refresh();
+          setStatus("Deleted (offline).");
+          setTimeout(() => setStatus(""), 900);
         }
       }
 

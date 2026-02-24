@@ -26,4 +26,3 @@ jobs:
         run: |
           docker tag azure-notes "$DOCKER_USERNAME/azure-notes:latest"
           docker push "$DOCKER_USERNAME/azure-notes:latest"
-
