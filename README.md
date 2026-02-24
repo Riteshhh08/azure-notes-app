@@ -1,161 +1,216 @@
-☁️ Azure Notes — Containerized Web Application
+Azure Notes — Containerized Web Application
 
-A lightweight notes application demonstrating end-to-end delivery from local development to public cloud hosting.
+A lightweight notes application deployed to Microsoft Azure App Service using Docker containers.
+This project demonstrates an end-to-end cloud delivery workflow:
 
-This project is deployed using two platforms:
+Local development → Containerization → Registry publication → Managed cloud hosting
 
-☁️ Microsoft Azure App Service (Docker container)
+Live Application
 
-▲ Vercel (serverless hosting)
+Public URL:
+https://azure-notes-ritesh-fuawg4axh0fqdraq.centralindia-01.azurewebsites.net/
 
-🌐 Live Applications
-☁️ Azure Deployment (Containerized)
+Project Overview
 
-👉 Open on Azure
+Azure Notes is a stateless web application that allows users to create and manage notes through a simple browser interface. The application is packaged as a Docker image and deployed on Azure App Service using a Linux container environment.
 
-▲ Vercel Deployment (Serverless)
+The deployment follows production-style practices, ensuring portability, reproducibility, and minimal infrastructure management.
 
-👉 Open on Vercel
+Key Features
 
-📌 Project Overview
+Web-based note creation and deletion
 
-Azure Notes is a web-based notes application that allows users to create and delete notes through a browser interface.
+Public HTTPS access
 
-The application is:
+Containerized runtime using Docker
 
-🐳 Containerized for Azure deployment
+Managed cloud hosting on Azure
 
-▲ Serverless-ready for Vercel
+Reproducible deployment from a registry
 
-📦 Portable across environments
+Simple, lightweight interface
 
-⚡ Lightweight and stateless
-
-This project demonstrates real-world cloud delivery strategies used in modern applications.
-
-✨ Key Features
-
-📝 Create and delete notes in real time
-
-🔒 Secure public access via HTTPS
-
-🐳 Containerized deployment on Azure
-
-▲ Serverless deployment on Vercel
-
-📦 Reproducible builds using Docker
-
-⚡ Fast and minimal UI
-
-🧩 Technology Stack
-🖥️ Application
+Technology Stack
+Application
 
 Node.js
 
 Express
 
-🐳 Containerization
+Containerization
 
 Docker
 
-☁️ Cloud Platforms
+Cloud Platform
 
-Azure App Service (Linux container)
+Microsoft Azure App Service (Linux container)
 
-Vercel (serverless platform)
-
-📦 Registry
+Registry
 
 Docker Hub
 
-🔧 Version Control
+Version Control
 
 Git
 
 GitHub
 
-🔄 Automation
+Automation
 
-GitHub Actions
+GitHub Actions (image build and push)
 
-🏗️ Architecture
-☁️ Azure Deployment
+Architecture
 Client Browser
-   ↓
-Internet
-   ↓
+      ↓
+   Internet
+      ↓
 Azure App Service
-   ↓
+      ↓
 Docker Container
-   ↓
+      ↓
 Node.js Application
-▲ Vercel Deployment
-Client Browser
-   ↓
-Vercel Edge Network
-   ↓
-Serverless Runtime
-   ↓
-Node.js Application
-🚀 Deployment Workflow (Azure)
+Deployment Workflow
 
-💻 Develop and test locally
+Develop and test locally
 
-🧾 Create Dockerfile
+Create Dockerfile
 
-🏗️ Build Docker image
+Build container image
 
-📤 Push image to Docker Hub
+Push image to Docker Hub
 
-⚙️ Configure Azure App Service
+Configure Azure App Service to pull image
 
-🌐 Deploy and validate
+Deploy and validate via public endpoint
 
-▲ Deployment Workflow (Vercel)
+Running Locally
 
-📁 Push code to GitHub
+Install dependencies and start the application:
 
-🔗 Import project into Vercel
-
-⚙️ Automatic build
-
-🌐 Deployment with public URL
-
-🧪 Run Locally
-▶️ Using Node.js
 npm install
 npm start
 
-Open:
+Open in browser:
 
 http://localhost:3000
-🐳 Run with Docker
-Build Image
+Running with Docker
+
+Build the container image:
+
 docker build -t azure-notes .
-Run Container
+
+Run the container:
+
 docker run -p 3000:3000 azure-notes
 
-Access locally:
+The application will be available at:
 
 http://localhost:3000
-📦 Container Registry
+Container Registry
 
 Docker Hub repository:
+vishwakarmaritesh08/azure-notes
 
-👉 vishwakarmaritesh08/azure-notes
+The Azure App Service deployment pulls the latest image directly from this registry.
 
-Azure pulls the container image directly from this registry.
+Continuous Integration
 
-🔄 Continuous Integration
+A GitHub Actions workflow builds and publishes the Docker image on repository updates.
 
-A GitHub Actions workflow automatically builds and pushes the Docker image.
-
-Workflow file
+Workflow location:
 
 .github/workflows/azure-deploy.yml
-
-Required Secrets
+Required Repository Secrets
 
 DOCKER_USERNAME
 
 DOCKER_PASSWORD
+
+Pipeline Steps
+
+Checkout source code
+
+Build Docker image
+
+Authenticate to Docker Hub
+
+Push image to registry
+
+Infrastructure Overview
+
+Azure App Service provides:
+
+Managed container hosting
+
+Automatic HTTPS
+
+Integrated networking
+
+Optional scaling capabilities
+
+Monitoring integration
+
+No virtual machine management is required.
+
+Screenshots
+Live Application
+
+Shows the deployed notes interface accessible via the public URL.
+
+(Insert UI screenshot here)
+
+Azure App Service Overview
+
+Displays the cloud hosting environment, runtime status, and container configuration.
+
+(Insert App Service screenshot here)
+
+Resource Architecture
+
+Visual representation of the relationship between the web app and compute resources.
+
+(Insert Resource Visualizer screenshot here)
+
+Docker Hub Registry
+
+Public repository containing the container image used for deployment.
+
+(Insert Docker Hub screenshot here)
+
+Local Container Execution
+
+Docker Desktop showing the container running locally before deployment.
+
+(Insert Docker Desktop screenshot here)
+
+Source Code Repository
+
+GitHub repository containing application code, Dockerfile, and workflow configuration.
+
+(Insert GitHub screenshot here)
+
+Limitations
+
+Data is not persisted across container restarts
+
+No authentication mechanism
+
+Minimal monitoring configuration
+
+Designed for demonstration purposes
+
+Future Improvements
+
+Persistent database integration
+
+User authentication and authorization
+
+Automated deployment to Azure
+
+Structured logging and monitoring
+
+Multi-service architecture
+
+Conclusion
+
+This project demonstrates a complete lifecycle for delivering a containerized application to the cloud using a managed platform. It reflects modern practices where applications are packaged as portable artifacts and deployed without direct infrastructure management.
