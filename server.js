@@ -8,6 +8,7 @@ app.use(express.static(__dirname));
 let notes = [];
 
 app.get("/notes", (req, res) => {
+  console.log("Notes in server memory (GET):", notes);
   res.json(notes);
 });
 
@@ -18,6 +19,8 @@ app.post("/notes", (req, res) => {
   }
 
   notes.push(note.trim());
+
+  console.log("Notes in server memory (POST):", notes);
   res.json({ message: "Added" });
 });
 
@@ -28,6 +31,8 @@ app.delete("/notes/:id", (req, res) => {
   }
 
   notes.splice(id, 1);
+
+  console.log("Notes in server memory (DELETE):", notes);
   res.json({ message: "Deleted" });
 });
 
